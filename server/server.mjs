@@ -15,6 +15,7 @@ app.use(bodyParser.json())
 io.on('connection', socket => {
   console.log(`Socket ID ${socket.id} connected`)
   socket.on('message', message => {
+    socket.broadcast.emit('send message to all clients', message)
     console.log(`Socket ID ${socket.id} sent message`)
   })
 
