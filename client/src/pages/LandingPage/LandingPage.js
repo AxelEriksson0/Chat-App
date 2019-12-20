@@ -23,7 +23,12 @@ const LandingPage = () => {
       return
     }
     console.log(`Joining chat as ${name}`)
-    history.push('/chat')
+    history.push({
+      pathname: '/chat',
+      state: {
+        user: name
+      }
+    })
   }
   return (
     <>

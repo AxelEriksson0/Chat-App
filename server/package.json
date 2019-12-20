@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.mjs",
-    "watch": "cross-env NODE_ENV=dev nodemon -e js -x npm start"
+    "watch": "cross-env NODE_ENV=dev nodemon -e mjs -x npm start"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "uuid": "^3.3.3"
   }
 }

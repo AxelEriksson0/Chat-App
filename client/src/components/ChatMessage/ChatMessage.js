@@ -5,16 +5,15 @@ import PropTypes from 'prop-types'
 import useStyles from './Style'
 
 const ChatMessage = props => {
-  console.log(props.fromYou)
   const classes = useStyles()
   return (
     <div className={`${classes.messageContainer} ${props.fromYou && classes.fromYouMessageContainer}`}>
       <Typography className={classes.sender}>
-          Axel
+        {props.user}
       </Typography>
       <Card className={`${classes.card} ${props.fromYou && classes.fromYouCard}`}>
         <Typography className={classes.message}>
-              well meaning and kindly. well meaning and kindly. well meaning and kindly.well meaning and kindly.
+          {props.message}
         </Typography>
       </Card>
     </div>
@@ -22,7 +21,9 @@ const ChatMessage = props => {
 }
 
 ChatMessage.propTypes = {
-  fromYou: PropTypes.bool
+  fromYou: PropTypes.bool,
+  message: PropTypes.string,
+  user: PropTypes.string
 }
 
 export default ChatMessage
