@@ -4,7 +4,7 @@ import express from 'express'
 import http from 'http'
 import socket from 'socket.io'
 import uuid from 'uuid'
-import joinChat from './routes/joinChat.mjs'
+import getChatUsers from './routes/getChatUsers.mjs'
 
 const app = express()
 const server = http.Server(app)
@@ -14,11 +14,6 @@ const port = process.env.PORT || 8000
 app.use(cors())
 app.use(bodyParser.json())
 app.set('io', io)
-
-const getUsers = () => {
-  const sockets = io.sockets.clients()
-  console.log(sockets)
-}
 
 const messages = [
 ]
@@ -32,16 +27,34 @@ io.on('connection', socket => {
 
   socket.on('message', message => {
     messages.push({ ...message, timestamp: Date.now(), id: uuid.v1() })
-    io.emit('send message to all clients', messages)
+    io.emit('messages', messages)
   })
 
   socket.on('disconnect', () => {
+    if (socket.user) {
+      messages.push({ message: `${socket.user.user} has left the chat!`, user: 'Admin', timestamp: Date.now(), id: uuid.v1() })
+      io.emit('messages', messages)
+    }
     console.log(`Socket ID ${socket.id} left`)
   })
 })
 
-app.use('/join-chat', joinChat)
+app.use('/get-chat-users', getChatUsers)
 
 server.listen(port, () => {
   console.log(`Listening on port ${port}...`)
+})
+
+process.on('SIGINT', () => {
+  io.emit('server shutting down')
+  server.close(() => {
+    process.exit(0)
+  })
+})
+
+process.on('SIGTERM', () => {
+  console.log('Server shutting down...')
+  server.close(() => {
+    process.exit(0)
+  })
 })
