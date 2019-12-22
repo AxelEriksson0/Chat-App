@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles(theme => ({
   button: {
     height: '3.5rem',
-    marginLeft: '1rem'
+    marginTop: '1rem'
   },
   buttons: {
     marginTop: 'auto',
@@ -16,9 +16,11 @@ const useStyles = makeStyles(theme => ({
     height: '100vh'
   },
   message: {
-    width: '400px'
+    width: '100%'
   },
   messages: {
+    paddingRight: '1rem',
+    paddingLeft: '1rem',
     display: 'flex',
     flexDirection: 'column',
     overflow: 'auto'
