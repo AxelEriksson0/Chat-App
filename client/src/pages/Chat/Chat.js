@@ -22,7 +22,7 @@ const Chat = () => {
 
   const sendMessage = event => {
     event.preventDefault()
-    socket.emit('message', { message: message, user: name })
+    socket.emit('message from client', { message: message, user: name })
     setMessage('')
   }
 

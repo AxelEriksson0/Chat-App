@@ -3,14 +3,11 @@ const router = express.Router()
 
 router.get('/', async (req, res) => {
   const io = req.app.get('io')
-  let clientIDs = []
-
-  await io.clients((error, clients) => {
-    if (error) { res.json({ error: error }) }
-    clientIDs = clients
-  })
-  const sockets = clientIDs.map(client => io.sockets.connected[client])
+  const sockets = Object.keys(io.sockets.sockets).map(clientId => io.sockets.connected[clientId])
   const users = sockets.filter(socket => socket.user).map(socket => socket.user)
+  if (users === undefined) {
+    return res.json([])
+  }
   res.json(users)
 })
 

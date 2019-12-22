@@ -20,17 +20,20 @@ const LandingPage = () => {
 
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
+  const [toastVariant, setToastVariant] = useState('info')
 
   const enterChat = async event => {
     event.preventDefault()
     if (name === '') {
+      setToastVariant('error')
       setToastMessage('You need to input a name!')
       setShowToast(true)
       return
     }
 
     if (name.toLowerCase() === 'admin') {
-      setToastMessage('Admin/admin is a reserved name! Try another!')
+      setToastVariant('error')
+      setToastMessage('Admin/admin is a reserved name!')
       setShowToast(true)
       return
     }
@@ -40,7 +43,8 @@ const LandingPage = () => {
       const users = await res.json()
 
       if (users.find(user => user.user === name) !== undefined) {
-        setToastMessage('Name already taken! Type a different one.')
+        setToastVariant('error')
+        setToastMessage('Name already taken!')
         setShowToast(true)
         return
       }
@@ -56,7 +60,7 @@ const LandingPage = () => {
         pathname: '/chat'
       })
     } catch (error) {
-      setToastMessage('Cannot connect to the server! Try again later!')
+      setToastMessage('Cannot connect to the server!')
       setShowToast(true)
     }
   }
@@ -83,7 +87,7 @@ const LandingPage = () => {
           </form>
         </Container>
 
-        <Toast open={showToast} setOpen={setShowToast} message={toastMessage} />
+        <Toast open={showToast} setOpen={setShowToast} message={toastMessage} variant={toastVariant} />
       </ThemeProvider>
     </>
   )

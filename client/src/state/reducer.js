@@ -3,8 +3,8 @@ import io from 'socket.io-client'
 const url = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_URL : 'http://localhost:8000'
 
 export const initialState = {
-  socket: null,
-  name: localStorage.getItem('name') ? localStorage.getItem('name') : null
+  name: localStorage.getItem('name') ? localStorage.getItem('name') : null,
+  socket: null
 }
 
 export const reducer = (state, action) => {

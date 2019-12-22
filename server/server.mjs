@@ -23,7 +23,7 @@ io.on('connection', socket => {
     socket.user = user
   })
 
-  socket.on('message', message => {
+  socket.on('message from client', message => {
     io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
   })
 
