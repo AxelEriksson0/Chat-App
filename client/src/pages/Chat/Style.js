@@ -5,10 +5,14 @@ const useStyles = makeStyles(theme => ({
     height: '3.5rem',
     marginTop: '1rem'
   },
-  buttons: {
+  writeSendDisconnect: {
     marginTop: 'auto',
     paddingBottom: '1rem',
     paddingTop: '1rem'
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-between'
   },
   container: {
     display: 'flex',

@@ -4,9 +4,9 @@ import { useHistory } from 'react-router-dom'
 import { SOCKET_DISCONNECT } from '../../state/variables'
 import { useStateValue } from '../../state/state'
 
+import { darkTheme, lightTheme } from '../../ui/theme/index'
 import { Button, Container, TextField, ThemeProvider } from '@material-ui/core'
 import ChatMessage from '../../components/ChatMessage/ChatMessage'
-import { darkTheme, lightTheme } from '../../ui/theme/index'
 import useStyles from './Style'
 
 const Chat = () => {
@@ -23,6 +23,7 @@ const Chat = () => {
   const sendMessage = event => {
     event.preventDefault()
     socket.emit('message', { message: message, user: name })
+    setMessage('')
   }
 
   useEffect(() => {
@@ -31,10 +32,10 @@ const Chat = () => {
       socket.user = newUser
       socket.emit('new user', newUser)
 
-      socket.on('messages', newMessages => {
-        const messagesToShow = newMessages.filter(message => message.timestamp > socket.user.timestamp)
-        setMessages(messagesToShow)
+      socket.on('message from server', newMessage => {
+        setMessages(messages => [...messages, newMessage])
       })
+
       socket.on('server shutting down', () => {
         history.push('/')
       })
@@ -60,7 +61,7 @@ const Chat = () => {
             }
           </div>
 
-          <Container className={classes.buttons}>
+          <Container className={classes.writeSendDisconnect}>
             <form onSubmit={sendMessage}>
               <ThemeProvider theme={darkTheme}>
                 <TextField className={classes.message}
@@ -68,24 +69,26 @@ const Chat = () => {
                   label="Message"
                   variant="outlined"
                   onChange={(event) => setMessage(event.target.value)}
+                  value={message}
                 />
+
+                <div className={classes.buttons}>
+                  <Button className={classes.button}
+                    color="secondary"
+                    variant="contained"
+                    onClick={disconnectFromChat}>
+                   Disconnect
+                  </Button>
+                  <Button className={classes.button}
+                    color="primary"
+                    disabled={message === ''}
+                    variant="contained"
+                    type="submit">
+                  Send Message
+                  </Button>
+                </div>
               </ThemeProvider>
-
-              <Button className={classes.button}
-                color="primary"
-                disabled={message === ''}
-                variant="contained"
-                type="submit">
-                Send Message
-              </Button>
             </form>
-
-            <Button className={classes.button}
-              color="secondary"
-              variant="contained"
-              onClick={disconnectFromChat}>
-                Disconnect From Chat
-            </Button>
           </Container>
         </div>
       </ThemeProvider>

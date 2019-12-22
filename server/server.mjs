@@ -15,46 +15,36 @@ app.use(cors())
 app.use(bodyParser.json())
 app.set('io', io)
 
-const messages = [
-]
+app.use('/get-chat-users', getChatUsers)
 
 io.on('connection', socket => {
   console.log(`Socket ID ${socket.id} connected`)
-
   socket.on('new user', user => {
     socket.user = user
   })
 
   socket.on('message', message => {
-    messages.push({ ...message, timestamp: Date.now(), id: uuid.v1() })
-    io.emit('messages', messages)
+    io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
   })
 
   socket.on('disconnect', () => {
     if (socket.user) {
-      messages.push({ message: `${socket.user.user} has left the chat!`, user: 'Admin', timestamp: Date.now(), id: uuid.v1() })
-      io.emit('messages', messages)
+      io.emit('message from server', { message: `${socket.user.user} has left the chat!`, user: 'Admin', timestamp: Date.now(), id: uuid.v1() })
     }
     console.log(`Socket ID ${socket.id} left`)
   })
 })
 
-app.use('/get-chat-users', getChatUsers)
-
 server.listen(port, () => {
   console.log(`Listening on port ${port}...`)
 })
 
-process.on('SIGINT', () => {
-  io.emit('server shutting down')
-  server.close(() => {
-    process.exit(0)
-  })
-})
-
-process.on('SIGTERM', () => {
-  console.log('Server shutting down...')
-  server.close(() => {
-    process.exit(0)
+const terminationSignals = ['SIGINT', 'SIGTERM']
+terminationSignals.forEach(terminationSignal => {
+  process.on(terminationSignal, () => {
+    io.emit('server shutting down')
+    server.close(() => {
+      process.exit(0)
+    })
   })
 })
