@@ -1,75 +1,84 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import io from 'socket.io-client'
+import { useHistory } from 'react-router-dom'
+
+import { SOCKET_DISCONNECT } from '../../state/variables'
+import { useStateValue } from '../../state/state'
 
 import { Button, Container, TextField, ThemeProvider } from '@material-ui/core'
-import { darkTheme, lightTheme } from '../../ui/theme/index'
 import ChatMessage from '../../components/ChatMessage/ChatMessage'
+import { darkTheme, lightTheme } from '../../ui/theme/index'
 import useStyles from './Style'
 
-const url = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_URL : 'http://localhost:8000'
-const socket = io(url)
-
 const Chat = () => {
-  const location = useLocation()
   const classes = useStyles()
   const history = useHistory()
-  const [messageToSend, setMessageToSend] = useState('')
+  const [{ name, socket }, dispatch] = useStateValue()
+  const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
-  const user = location?.state?.user
-  if (user === undefined) {
+
+  if (name === null || socket === null) {
     history.push('/')
   }
 
-  const sendMessage = () => {
-    socket.emit('message', { message: messageToSend, user: user })
+  const sendMessage = event => {
+    event.preventDefault()
+    socket.emit('message', { message: message, user: name })
   }
 
   useEffect(() => {
-    const newUser = { user: user, timestamp: Date.now() }
-    socket.user = newUser
-    socket.emit('new user', newUser)
+    if (socket !== null) {
+      const newUser = { user: name, timestamp: Date.now() }
+      socket.user = newUser
+      socket.emit('new user', newUser)
 
-    socket.on('send message to all clients', newMessages => {
-      const messagesToShow = newMessages.filter(message => message.timestamp > socket.user.timestamp)
-      setMessages(messagesToShow)
-    })
-  }, [user])
+      socket.on('messages', newMessages => {
+        const messagesToShow = newMessages.filter(message => message.timestamp > socket.user.timestamp)
+        setMessages(messagesToShow)
+      })
+      socket.on('server shutting down', () => {
+        history.push('/')
+      })
+    }
+  }, [history, name, socket])
 
   const disconnectFromChat = () => {
+    dispatch({
+      type: SOCKET_DISCONNECT
+    })
     history.push('/')
   }
 
   return (
     <>
       <ThemeProvider theme={lightTheme}>
-        <Container className={classes.container}>
-
+        <div className={classes.container}>
           <div className={classes.messages}>
             {
               messages.map(message => (
-                <ChatMessage key={message.id} user={message.user} message={message.message} fromYou={user === message.user}/>
+                <ChatMessage key={message.id} user={message.user} message={message.message} fromYou={name === message.user}/>
               ))
             }
           </div>
 
-          <div className={classes.buttons}>
-            <ThemeProvider theme={darkTheme}>
-              <TextField className={classes.message}
-                id="Message"
-                label="Message"
-                variant="outlined"
-                onChange={(event) => setMessageToSend(event.target.value)}
-              />
-            </ThemeProvider>
+          <Container className={classes.buttons}>
+            <form onSubmit={sendMessage}>
+              <ThemeProvider theme={darkTheme}>
+                <TextField className={classes.message}
+                  id="Message"
+                  label="Message"
+                  variant="outlined"
+                  onChange={(event) => setMessage(event.target.value)}
+                />
+              </ThemeProvider>
 
-            <Button className={classes.button}
-              color="primary"
-              disabled={messageToSend === ''}
-              variant="contained"
-              onClick={sendMessage}>
+              <Button className={classes.button}
+                color="primary"
+                disabled={message === ''}
+                variant="contained"
+                type="submit">
                 Send Message
-            </Button>
+              </Button>
+            </form>
 
             <Button className={classes.button}
               color="secondary"
@@ -77,8 +86,8 @@ const Chat = () => {
               onClick={disconnectFromChat}>
                 Disconnect From Chat
             </Button>
-          </div>
-        </Container>
+          </Container>
+        </div>
       </ThemeProvider>
     </>
   )
