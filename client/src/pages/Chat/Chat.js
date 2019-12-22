@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { SOCKET_DISCONNECT } from '../../state/variables'
+import { SOCKET_DISCONNECT, SET_TOAST } from '../../state/variables'
 import { useStateValue } from '../../state/state'
 
 import { darkTheme, lightTheme } from '../../ui/theme/index'
@@ -45,6 +45,11 @@ const Chat = () => {
   const disconnectFromChat = () => {
     dispatch({
       type: SOCKET_DISCONNECT
+    })
+    dispatch({
+      type: SET_TOAST,
+      message: 'Disconnected from server',
+      variant: 'info'
     })
     history.push('/')
   }

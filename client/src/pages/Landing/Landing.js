@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { SET_NAME, SOCKET_CONNECT } from '../../state/variables'
+import { SET_NAME, SOCKET_CONNECT, REMOVE_TOAST } from '../../state/variables'
 import { useStateValue } from '../../state/state'
 
 import { Button, Container, TextField } from '@material-ui/core'
@@ -16,11 +16,22 @@ const LandingPage = () => {
   const classes = useStyles()
   const history = useHistory()
   const [name, setName] = useState('')
-  const [, dispatch] = useStateValue()
+  const [{ toast }, dispatch] = useStateValue()
 
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
   const [toastVariant, setToastVariant] = useState('info')
+
+  useEffect(() => {
+    if (toast.toast) {
+      setToastVariant(toast.variant)
+      setToastMessage(toast.message)
+      setShowToast(true)
+      dispatch({
+        type: REMOVE_TOAST
+      })
+    }
+  }, [dispatch, toast])
 
   const enterChat = async event => {
     event.preventDefault()
