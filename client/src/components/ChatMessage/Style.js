@@ -10,7 +10,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#00a0df'
   },
   message: {
-    color: '#fff'
+    color: '#fff',
+    wordWrap: 'anywhere'
   },
   messageContainer: {
     marginTop: '0.5rem',
