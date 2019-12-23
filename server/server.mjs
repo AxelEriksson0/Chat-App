@@ -5,9 +5,11 @@ import http from 'http'
 import socket from 'socket.io'
 import uuid from 'uuid'
 import morgan from 'morgan'
-import getChatUsers from './routes/getChatUsers.mjs'
+import Joi from '@hapi/joi'
 
+import getChatUsers from './routes/getChatUsers.mjs'
 import { logger } from './middleware/logger.mjs'
+import JoiSchemas from './middleware/schemas.mjs'
 
 const app = express()
 const server = http.Server(app)
@@ -24,12 +26,19 @@ app.use('/get-chat-users', getChatUsers)
 io.on('connection', socket => {
   logger.info(`Socket ID ${socket.id} connected`)
   socket.on('new user', user => {
+    logger.info(`socket ID ${socket.id} joined as ${user}`)
     socket.user = user
   })
 
   socket.on('message from client', message => {
-    logger.info(`Socket ID ${socket.id} sent message ${message}`)
-    io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
+    const { error } = JoiSchemas.message.validate(message)
+    const valid = error == null
+    if (valid) {
+      logger.info(`Socket ID ${socket.id} sent message ${message}`)
+      io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
+    } else {
+      logger.error('Invalid message sent') // TODO: Send back response
+    }
   })
 
   socket.on('disconnect', () => {

@@ -1,10 +1,10 @@
 ## Additional notes
 
 To build the Docker container:
-### `docker build -t client .`
+### `docker build -t client:1.0.0 .`
 
 And then:
-### `docker run -v ${PWD}:/app -v /app/node_modules -p 3001:3000 --rm sample:dev`
+### `docker run -p 3000:80 client:1.0.0`
 
 ---
 

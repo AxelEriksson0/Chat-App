@@ -5,6 +5,7 @@
     },
     "extends": [
         "plugin:react/recommended",
+        "plugin:cypress/recommended",
         "react-app",
         "standard"
     ],
