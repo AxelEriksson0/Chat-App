@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   client:
-    container_name: client_production
+    container_name: chat_app_client
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -13,10 +13,12 @@ services:
       - NODE_ENV=development
 
   server:
-    container_name: server_production
+    container_name: chat_app_server
     build:
       context: ./server
       dockerfile: Dockerfile
+    expose:
+      - '8000'
     ports:
       - '8000:8000'
     environment:
