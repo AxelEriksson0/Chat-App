@@ -1,6 +1,6 @@
 import { SET_NAME, SOCKET_CONNECT, SOCKET_DISCONNECT, SET_TOAST, REMOVE_TOAST } from './variables'
 import io from 'socket.io-client'
-const url = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_URL : 'http://localhost:8000'
+const url = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_SERVER_PRODUCTION_URL : process.env.REACT_APP_SERVER_DEVELOPMENT_URL
 
 export const initialState = {
   name: localStorage.getItem('name') ? localStorage.getItem('name') : null,
