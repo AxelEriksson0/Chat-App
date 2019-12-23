@@ -6,6 +6,8 @@ const useStyles = makeStyles(theme => ({
     marginTop: '1rem'
   },
   writeSendDisconnect: {
+    marginLeft: '1rem',
+    marginRight: '1rem',
     marginTop: 'auto',
     paddingBottom: '1rem',
     paddingTop: '1rem'

@@ -5,7 +5,7 @@ import { SOCKET_DISCONNECT, SET_TOAST } from '../../state/variables'
 import { useStateValue } from '../../state/state'
 
 import { darkTheme, lightTheme } from '../../ui/theme/index'
-import { Button, Container, TextField, ThemeProvider } from '@material-ui/core'
+import { Button, TextField, ThemeProvider } from '@material-ui/core'
 import ChatMessage from '../../components/ChatMessage/ChatMessage'
 import useStyles from './Style'
 
@@ -78,7 +78,7 @@ const Chat = () => {
             }
           </div>
 
-          <Container className={classes.writeSendDisconnect}>
+          <div className={classes.writeSendDisconnect}>
             <form onSubmit={sendMessage}>
               <ThemeProvider theme={darkTheme}>
                 <TextField className={classes.message}
@@ -106,7 +106,7 @@ const Chat = () => {
                 </div>
               </ThemeProvider>
             </form>
-          </Container>
+          </div>
         </div>
       </ThemeProvider>
     </>

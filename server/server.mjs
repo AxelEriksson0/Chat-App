@@ -1,14 +1,14 @@
-import cors from 'cors'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 import express from 'express'
 import http from 'http'
+import morgan from 'morgan'
 import socket from 'socket.io'
 import uuid from 'uuid'
-import morgan from 'morgan'
 
 import getChatUsers from './routes/getChatUsers.mjs'
-import { logger } from './middleware/logger.mjs'
 import JoiSchemas from './middleware/schemas.mjs'
+import { logger } from './middleware/logger.mjs'
 
 const InactivityBeforeDisconnect = 60000
 
@@ -29,16 +29,16 @@ io.on('connection', socket => {
   socket.on('new user', user => {
     logger.info(`socket ID ${socket.id} joined as ${user}`)
     socket.user = user
-    io.emit('message from server', { message: `${socket.user.user} has joined the chat!`, user: 'Admin', timestamp: Date.now(), id: uuid.v1() })
     socket.user.latestActivity = Date.now()
+    io.emit('message from server', { message: `${socket.user.user} has joined the chat!`, user: 'Admin', timestamp: Date.now(), id: uuid.v1() })
   })
 
   socket.on('message from client', message => {
     const { error } = JoiSchemas.message.validate(message)
     const valid = error == null
-    if (valid) {
+    if (valid && message.message.length < 10000) {
       logger.info(`Socket ID ${socket.id} sent message ${message}`)
-      io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
+      io.emit('message from server', { message: message.message, user: message.user, timestamp: Date.now(), id: uuid.v1() })
       socket.user.latestActivity = Date.now()
     } else {
       logger.error('Invalid message sent') // TODO: Send back error
@@ -46,9 +46,11 @@ io.on('connection', socket => {
   })
 
   const timeoutInterval = setInterval(() => {
-    if (Date.now() - socket.user.latestActivity >= InactivityBeforeDisconnect) {
-      socket.emit('inactive')
-      clearInterval(timeoutInterval)
+    if (socket.user) {
+      if (Date.now() - socket.user.latestActivity >= InactivityBeforeDisconnect) {
+        socket.emit('inactive')
+        clearInterval(timeoutInterval)
+      }
     }
   }, 5000)
 

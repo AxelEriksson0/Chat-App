@@ -1,8 +1,6 @@
 # Chat App
-Chat App built by https://github.com/axeleriksson0.
 
 ## Todo
-* Timeout of users
 * Integrations tests
 
 ## Requirements
