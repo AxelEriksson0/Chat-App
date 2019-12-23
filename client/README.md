@@ -6,6 +6,10 @@ To build the Docker container:
 And then:
 ### `docker run -p 3000:80 client:1.0.0`
 
+Your client will be available on localhost:3000 or run
+### `docker-machine ip default`
+to see the container IP address (Windows)
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
