@@ -1,17 +1,42 @@
 # Chat App
-Chat App - Built for an interview assignment
+Chat App built by https://github.com/axeleriksson0.
 
-Todo
-- Containerize project
-- Timeout of users
+## Todo
+* Timeout of users
+* Integrations tests
 
-For now:
-# Server
-- cd server
-- npm install
-- npm run watch
+## Requirements
+* Production
+  * Docker (tested with 19.03.1)
+* Development
+  * Node (tested with 13.5.0)
+  * npm (tested with 6.13.4)
 
-# Client
-- cd client
-- npm install
-- npm start
+## Run both server and client
+Production only.
+>`docker-compose up`
+
+## Run server
+See `README.md` under server.
+
+## Run client
+See `README.md` under server.
+
+## Tech Used
+
+### Client
+* `Cypress`
+* `Material-UI`
+* `React (create-react-app)`
+  * State management done with custom 
+* `socket.io`
+
+### Server
+* `Node`
+* `Express`
+* `socket.io`
+* Logging with `Winston` and `Morgan`
+* Validation done with `Joi`
+
+### Build
+* `Docker`. One `Dockerfile` for client and another for server. A `docker-compose.yml` that builds both for easy launch of the Chat App.
