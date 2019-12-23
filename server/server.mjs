@@ -10,7 +10,7 @@ import getChatUsers from './routes/getChatUsers.mjs'
 import { logger } from './middleware/logger.mjs'
 import JoiSchemas from './middleware/schemas.mjs'
 
-const InactivityBeforeDisconnect = 10000
+const InactivityBeforeDisconnect = 60000
 
 const app = express()
 const server = http.Server(app)
@@ -29,6 +29,7 @@ io.on('connection', socket => {
   socket.on('new user', user => {
     logger.info(`socket ID ${socket.id} joined as ${user}`)
     socket.user = user
+    io.emit('message from server', { message: `${socket.user.user} has joined the chat!`, user: 'Admin', timestamp: Date.now(), id: uuid.v1() })
     socket.user.latestActivity = Date.now()
   })
 
@@ -40,7 +41,7 @@ io.on('connection', socket => {
       io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
       socket.user.latestActivity = Date.now()
     } else {
-      logger.error('Invalid message sent') // TODO: Send back response
+      logger.error('Invalid message sent') // TODO: Send back error
     }
   })
 
