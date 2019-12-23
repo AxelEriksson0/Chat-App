@@ -5,11 +5,12 @@ import http from 'http'
 import socket from 'socket.io'
 import uuid from 'uuid'
 import morgan from 'morgan'
-import Joi from '@hapi/joi'
 
 import getChatUsers from './routes/getChatUsers.mjs'
 import { logger } from './middleware/logger.mjs'
 import JoiSchemas from './middleware/schemas.mjs'
+
+const InactivityBeforeDisconnect = 10000
 
 const app = express()
 const server = http.Server(app)
@@ -28,6 +29,7 @@ io.on('connection', socket => {
   socket.on('new user', user => {
     logger.info(`socket ID ${socket.id} joined as ${user}`)
     socket.user = user
+    socket.user.latestActivity = Date.now()
   })
 
   socket.on('message from client', message => {
@@ -36,10 +38,18 @@ io.on('connection', socket => {
     if (valid) {
       logger.info(`Socket ID ${socket.id} sent message ${message}`)
       io.emit('message from server', { ...message, timestamp: Date.now(), id: uuid.v1() })
+      socket.user.latestActivity = Date.now()
     } else {
       logger.error('Invalid message sent') // TODO: Send back response
     }
   })
+
+  const timeoutInterval = setInterval(() => {
+    if (Date.now() - socket.user.latestActivity >= InactivityBeforeDisconnect) {
+      socket.emit('inactive')
+      clearInterval(timeoutInterval)
+    }
+  }, 5000)
 
   socket.on('disconnect', () => {
     if (socket.user) {

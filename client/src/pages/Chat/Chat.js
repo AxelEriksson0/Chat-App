@@ -39,8 +39,20 @@ const Chat = () => {
       socket.on('server shutting down', () => {
         history.push('/')
       })
+
+      socket.on('inactive', () => {
+        dispatch({
+          type: SOCKET_DISCONNECT
+        })
+        dispatch({
+          type: SET_TOAST,
+          message: 'Disconnected from server due to inactivity',
+          variant: 'info'
+        })
+        history.push('/')
+      })
     }
-  }, [history, name, socket])
+  }, [dispatch, history, name, socket])
 
   const disconnectFromChat = () => {
     dispatch({
