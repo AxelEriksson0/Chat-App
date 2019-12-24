@@ -96,13 +96,17 @@ const Chat = () => {
                     onClick={disconnectFromChat}>
                    Disconnect
                   </Button>
-                  <Button className={classes.button}
+
+                  <Button
+                    className={classes.button}
                     color="primary"
                     disabled={message === ''}
-                    variant="contained"
-                    type="submit">
+                    id="sendMessageButton"
+                    type="submit"
+                    variant="contained">
                   Send Message
                   </Button>
+
                 </div>
               </ThemeProvider>
             </form>

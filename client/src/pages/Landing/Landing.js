@@ -90,8 +90,9 @@ const LandingPage = () => {
 
             <Button
               className={classes.button}
-              type="submit"
               color="primary"
+              id="joinChatButton"
+              type="submit"
               variant="contained">
           Join Chat
             </Button>
