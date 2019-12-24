@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '0.5rem'
   },
   fromYouMessageContainer: {
-    alignSelf: 'end'
+    alignSelf: 'flex-end'
   },
   sender: {
     color: 'rgba(255,255,255,0.50)',
