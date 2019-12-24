@@ -1,8 +1,5 @@
 # Chat App
 
-## Todo
-* Integrations tests
-
 ## Requirements
 * Production
   * Docker (tested with 19.03.1)
