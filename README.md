@@ -8,7 +8,6 @@
   * npm (tested with 6.13.4)
 
 ## Run both server and client
-Production only.
 >`docker-compose up`
 
 ## Run server
