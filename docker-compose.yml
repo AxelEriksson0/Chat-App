@@ -4,6 +4,7 @@ services:
 
   client:
     container_name: chat_app_client
+    image: gcr.io/experimental-projects-0/chat-app-client:latest
     build:
       context: ./client
       dockerfile: Dockerfile
@@ -14,6 +15,7 @@ services:
 
   server:
     container_name: chat_app_server
+    image: gcr.io/experimental-projects-0/chat-app-server:latest
     build:
       context: ./server
       dockerfile: Dockerfile
